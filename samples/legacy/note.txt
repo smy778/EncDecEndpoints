@@ -1,0 +1,1 @@
+This folder contains legacy code for kai database using the "token" field.
