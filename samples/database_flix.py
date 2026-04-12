@@ -42,7 +42,7 @@ The 'episodes' field contains:
     - titles under the 'title' key
     - episode id under the 'eid' key
 
-Unlike kai database, flix database does not include scraped 'sources'.
+Unlike kai database, flix database does not include 'sources'.
 """
 episodes = entries[0]["episodes"]
 

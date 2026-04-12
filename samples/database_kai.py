@@ -43,7 +43,7 @@ The 'episodes' field contains:
     - episode source token under the 'token' key
     - scraped sources and skips under the 'sources' key
 
-Fallback in case scraped sources have issues:
+Fallback in case sources have issues:
 Info on using the 'token' can be found in animekai.py sample, line 49.
 """
 episodes = entries[0]["episodes"]
