@@ -14,29 +14,59 @@ YFLIX_AJAX = "https://yflix.to/ajax"
 # --- Cyberpunk Edgerunners ---
 url = "https://yflix.to/watch/cyberpunk-edgerunners.b4d24"
 
-# Extract content id
+"""
+Extract content id.
+"""
 html = requests.get(url, headers=HEADERS).text
 content_id = re.search(r'<div[^>]*id="movie-rating"[^>]*data-id="([^"]+)"', html).group(1)
 
-# Episodes data
+"""
+Sample episodes data.
+
+Encrypt content id, then request the episodes list.
+Returned HTML is parsed into a structured episodes dictionary.
+"""
 enc_id = requests.get(f"{API}/enc-movies-flix?text={content_id}").json()["result"]
 episodes_resp = requests.get(f"{YFLIX_AJAX}/episodes/list?id={content_id}&_={enc_id}", headers=HEADERS).json()
 episodes = requests.post(f"{API}/parse-html", json={"text": episodes_resp["result"]}).json()["result"]
 
-# Sample eid to load servers
+"""
+Sample eid to load servers.
+
+The 'episodes' field contains:
+    - titles under the 'title' key
+    - episode id under the 'eid' key
+"""
 season = "1"
 episode = "1"
 eid = episodes[season][episode]["eid"]
 
+"""
+Sample servers data.
+
+Encrypt eid, then request the servers list.
+Returned HTML is parsed into a structured servers dictionary.
+"""
 enc_eid = requests.get(f"{API}/enc-movies-flix?text={eid}").json()["result"]
 servers_resp = requests.get(f"{YFLIX_AJAX}/links/list?eid={eid}&_={enc_eid}", headers=HEADERS).json()
 servers = requests.post(f"{API}/parse-html", json={"text": servers_resp["result"]}).json()["result"]
 
-# Sample server lid to load embed
+"""
+Sample server lid to load embed.
+Available type keys may include:
+    - default
+
+Server options are keys of servers[type]: 
+    - "1"
+    - "2"
+"""
 type = "default"
-server_id = "2" # server options are keys of servers[type] dictionary: '1', '2', etc.
+server_id = "1"
 lid = servers[type][server_id]["lid"]
 
+"""
+Encrypt lid, then request embed data.
+"""
 enc_lid = requests.get(f"{API}/enc-movies-flix?text={lid}").json()["result"]
 embed_resp = requests.get(f"{YFLIX_AJAX}/links/view?id={lid}&_={enc_lid}", headers=HEADERS).json()
 encrypted = embed_resp["result"]

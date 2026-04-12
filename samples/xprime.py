@@ -6,13 +6,11 @@ from time import time
 from urllib.parse import quote
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+    "Referer": "https://mznxiwqjdiq00239q.space/"
 }
 
 API = "https://enc-dec.app/api"
-
-XPRIME_DOMAIN = "mznxiwqjdiq00239q.space"
-HEADERS["Referer"] = f"https://{XPRIME_DOMAIN}/"
 
 # Altcha solving utilities
 def solver(data):
@@ -32,7 +30,7 @@ def solver(data):
     return -1
 
 def solve_altcha():
-    url = f"https://{XPRIME_DOMAIN}/altcha/challenge"
+    url = f"https://mznxiwqjdiq00239q.space/altcha/challenge"
     response = requests.get(url)
     challenge = response.json()
 
@@ -56,11 +54,11 @@ def solve_altcha():
 
     return base64.b64encode(json.dumps(payload).encode()).decode()
 
-# Note that there are different servers, find them here: https://{XPRIME_DOMAIN}/servers
-# Sample servers list: ["primenet","bomber","primebox","vento","fed","blackout","eek","mary"]
+# Note that there are different servers, find them here: https://mznxiwqjdiq00239q.space/servers
+# Sample servers list: ["primenet", "finger", "primebox", "king", "facile", "lighter", "fed", "eek"]
 
-# Movie format: <https://{XPRIME_DOMAIN}/{server}?name={title}&year={year}&id={tmdb_id}&imdb={imdb_id}>
-# Tv format: <https://{XPRIME_DOMAIN}/{server}?name={title}&year={year}&id={tmdb_id}&imdb={imdb_id}&season={season_number}&episode={episode_number}>
+# Movie format: <https://mznxiwqjdiq00239q.space/{server}?name={title}&year={year}&id={tmdb_id}&imdb={imdb_id}>
+# Tv format: <https://mznxiwqjdiq00239q.space/{server}?name={title}&year={year}&id={tmdb_id}&imdb={imdb_id}&season={season_number}&episode={episode_number}>
 
 # --- Cyberpunk Edgerunners ---
 title = "Cyberpunk: Edgerunners"
@@ -76,7 +74,7 @@ altcha = solve_altcha()
 
 # Get encrypted text
 server = "primebox"
-url = f"https://{XPRIME_DOMAIN}/{server}?name={quote(title)}&year={year}&id={tmdb_id}&imdb={imdb_id}&season={season}&episode={episode}&altcha={altcha}"
+url = f"https://mznxiwqjdiq00239q.space/{server}?name={quote(title)}&year={year}&id={tmdb_id}&imdb={imdb_id}&season={season}&episode={episode}&altcha={altcha}"
 encrypted = requests.get(url, headers=HEADERS).text
 
 # Decrypt
