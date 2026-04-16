@@ -61,7 +61,7 @@ Server options are keys of servers[type]:
     - "1"
     - "2"
 """
-type = "sub"
+type = "softsub"
 server_id = "1"
 lid = servers[type][server_id]["lid"]
 
