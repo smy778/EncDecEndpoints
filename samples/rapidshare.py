@@ -7,6 +7,15 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 # Note: this decryptor supports any url returned by yflix and 1movies, regardless the domain
 # --- Cyberpunk Edgerunners ---
 url = "https://yflix.to/ajax/links/view?id=cYe--KWj5g&_=VU7EzW-r3IptzPzkwFi43K6fMXG1W-twXRnEjr7jYvY2mi6oJTqlmYTf"
@@ -25,7 +34,10 @@ media = embed.replace("/e/", "/media/")
 encrypted = requests.get(media, headers=HEADERS).json()['result']
 
 # Decrypt
-decrypted = requests.post(f"{API}/dec-rapid", json={"text": encrypted, "agent": HEADERS["User-Agent"]}).json()['result']
+dec_rapid = f"{API}/dec-rapid"
+response = requests.post(dec_rapid, json={"text": encrypted, "agent": HEADERS["User-Agent"]}).json()
+decrypted = validate(response, dec_rapid)
+
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
 print(f"Referer: {HEADERS['Referer']}\n") # or the embed url's domain
 print(decrypted)

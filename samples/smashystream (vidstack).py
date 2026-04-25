@@ -7,6 +7,15 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 # --- Shawshank Redemption ---
 title = "Shawshank Redemption"
 type = "movie"
@@ -61,7 +70,10 @@ stream_url = f"{host}/api/v1/video?id={id}"
 encrypted = requests.get(stream_url, headers=HEADERS).text
 
 # Decrypt
-decrypted = requests.post(f"{API}/dec-vidstack", json={"text": encrypted, "type": "1"}).json()["result"]
+dec_vidstack = f"{API}/dec-vidstack"
+response = requests.post(dec_vidstack, json={"text": encrypted, "type": "1"}).json()
+decrypted = validate(response, dec_vidstack)
+
 print(f"\n{'-'*25} Type 1 Decrypted Data {'-'*25}\n")
 print(f"Referer: {HEADERS['Referer']}\n")
 print(decrypted)
@@ -77,7 +89,10 @@ file = response['data']['sources'][0]['file']
 subtitles = response['data'].get('tracks', "")
 
 # Decrypt
-decrypted = requests.post(f"{API}/dec-vidstack", json={"text": file, "type": "2"}).json()["result"]
+dec_vidstack = f"{API}/dec-vidstack"
+response = requests.post(dec_vidstack, json={"text": file, "type": "2"}).json()
+decrypted = validate(response, dec_vidstack)
+
 print(f"\n{'-'*25} Type 2 Decrypted Data {'-'*25}\n")
 print(f"Referer: {HEADERS['Referer']}\n")
 print(listParser(decrypted))

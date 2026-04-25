@@ -8,17 +8,32 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 # --- KissKH ---
 
 content_id = "192143"
 
 # Get streams content
-vid_key = requests.get(f"{API}/enc-kisskh?text={content_id}&type=vid").json()['result']
+enc_kisskh_vid = f"{API}/enc-kisskh?text={content_id}&type=vid"
+response = requests.get(enc_kisskh_vid).json()
+vid_key = validate(response, enc_kisskh_vid)
+
 url = f"https://kisskh.do/api/DramaList/Episode/{content_id}.png?err=false&ts=&time=&kkey={vid_key}"
 video_response = requests.get(url, headers=HEADERS).json()
 
 # Get subtitles content
-sub_key = requests.get(f"{API}/enc-kisskh?text={content_id}&type=sub").json()['result']
+enc_kisskh_sub = f"{API}/enc-kisskh?text={content_id}&type=sub"
+response = requests.get(enc_kisskh_sub).json()
+sub_key = validate(response, enc_kisskh_sub)
+
 url = f"https://kisskh.do/api/Sub/{content_id}?kkey={sub_key}"
 subtitle_response = requests.get(url, headers=HEADERS).json()
 

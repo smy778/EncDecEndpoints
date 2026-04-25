@@ -12,6 +12,15 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 # Altcha solving utilities
 def solver(data):
     algorithm = data["algorithm"]
@@ -78,7 +87,10 @@ url = f"https://mznxiwqjdiq00239q.space/{server}?name={quote(title)}&year={year}
 encrypted = requests.get(url, headers=HEADERS).text
 
 # Decrypt
-decrypted = requests.post(f"{API}/dec-xprime", json={"text": encrypted}).json()['result']
+dec_xprime = f"{API}/dec-xprime"
+response = requests.post(dec_xprime, json={"text": encrypted}).json()
+decrypted = validate(response, dec_xprime)
+
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
 print(f"Referer: {HEADERS['Referer']}\n")
 print(decrypted)

@@ -6,6 +6,15 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 # --- OneTouchTV ---
 
 content_url = "https://api3.devcorp.me/web/vod/150294-ghost-train-2024/episode/1"
@@ -14,6 +23,9 @@ content_url = "https://api3.devcorp.me/web/vod/150294-ghost-train-2024/episode/1
 encrypted = requests.get(content_url, headers=HEADERS).text
 
 # Decrypt
-decrypted = requests.post(f"{API}/dec-onetouchtv", json={"text": encrypted}).json()['result']
+dec_onetouchtv = f"{API}/dec-onetouchtv"
+response = requests.post(dec_onetouchtv, json={"text": encrypted}).json()
+decrypted = validate(response, dec_onetouchtv)
+
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
 print(decrypted)

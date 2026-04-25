@@ -8,6 +8,15 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 # Movie format: <https://vidlink.pro/api/b/movie/{encrypted_id}>
 # Tv format: <https://vidlink.pro/api/b/tv/{encrypted_id}/{season_number}/{episode_number}>
 
@@ -21,7 +30,9 @@ season = "1"
 episode = "1"
 
 # Get encrypted tmdb id text
-encrypted = requests.get(f"{API}/enc-vidlink?text={tmdb_id}").json()['result']
+enc_vidlink = f"{API}/enc-vidlink?text={tmdb_id}"
+response = requests.get(enc_vidlink).json()
+encrypted = validate(response, enc_vidlink)
 
 # Request vidlink url
 url = f"https://vidlink.pro/api/b/{type}/{encrypted}/{season}/{episode}"

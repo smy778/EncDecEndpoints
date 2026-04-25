@@ -10,6 +10,15 @@ HEADERS = {
 API = "https://enc-dec.app/api"
 VERSION = "1"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 # Movie format: <https://vidfast.pro/movie/{IMDB_ID or TMDB_ID}>
 # Tv format: <https://vidlink.pro//tv/{IMDB_ID or TMDB_ID}/{season_number}/{episode_number}>
 
@@ -31,7 +40,9 @@ match = re.search(r'\\"en\\":\\"(.*?)\\"', response)
 text = match.group(1)
 
 # Get vidfast urls
-parts = requests.get(f"{API}/enc-vidfast?text={text}&version={VERSION}").json()['result']
+enc_vidfast = f"{API}/enc-vidfast?text={text}&version={VERSION}"
+response = requests.get(enc_vidfast).json()
+parts = validate(response, enc_vidfast)
 servers = parts['servers']
 stream = parts['stream']
 token = parts['token']
@@ -41,7 +52,10 @@ HEADERS["X-CSRF-Token"] = token
 
 # Get streaming servers and decrypt
 servers_encrypted = requests.post(servers, headers=HEADERS).text
-servers_decrypted = requests.post(f"{API}/dec-vidfast", json={"text": servers_encrypted, "version": VERSION}).json()['result']
+
+dec_vidfast = f"{API}/dec-vidfast"
+response = requests.post(dec_vidfast, json={"text": servers_encrypted, "version": VERSION}).json()
+servers_decrypted = validate(response, dec_vidfast)
 
 # Sample the first server
 server = servers_decrypted[0]
@@ -50,7 +64,10 @@ data = server['data']
 # Get stream and decrypt
 stream = f"{stream}/{data}"
 stream_encrypted = requests.post(stream, headers=HEADERS).text
-stream_decrypted = requests.post(f"{API}/dec-vidfast", json={"text": stream_encrypted, "version": VERSION}).json()
+
+dec_vidfast = f"{API}/dec-vidfast"
+response = requests.post(dec_vidfast, json={"text": stream_encrypted, "version": VERSION}).json()
+stream_decrypted = validate(response, dec_vidfast)
 
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
 print(f"Referer: {HEADERS['Referer']}\n")

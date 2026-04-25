@@ -9,6 +9,15 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 # --- Abyss ---
 
 content_id = "K8R6OOjS7"
@@ -20,7 +29,10 @@ match = re.search(r'const\s+datas\s*=\s*"([^"]*)"', response)
 encrypted = match.group(1)
 
 # Decrypt
-decrypted = requests.post(f"{API}/dec-abyss", json={"text": encrypted}).json()['result']
+dec_abyss = f"{API}/dec-abyss"
+response = requests.post(dec_abyss, json={"text": encrypted}).json()
+decrypted = validate(response, dec_abyss)
+
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
 print(f"Referer: {HEADERS['Referer']}\n")
 print(decrypted)

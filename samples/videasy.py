@@ -10,6 +10,15 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 '''
 Server     Language     URL
 -----------------------------------------------------------------------------------------------
@@ -55,7 +64,10 @@ url = f"https://api.videasy.net/myflixerzupcloud/sources-with-title?title={enc_t
 enc_data = requests.get(url, headers=HEADERS).text
 
 # Decrypt
-decrypted = requests.post(f"{API}/dec-videasy", json={"text": enc_data, "id": tmdb_id}).json()['result']
+dec_videasy = f"{API}/dec-videasy"
+response = requests.post(dec_videasy, json={"text": enc_data, "id": tmdb_id}).json()
+decrypted = validate(response, dec_videasy)
+
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
 print(f"Referer: {HEADERS['Referer']}\n")
 print(decrypted)

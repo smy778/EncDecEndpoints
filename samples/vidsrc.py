@@ -10,6 +10,15 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 '''
 Vidsrc.cc uses two servers: UpCloud and VidPlay
 UpCloud - embeds iframe from megacloud / vidcloud
@@ -68,7 +77,9 @@ user_id = re.search(r'var userId = "(.*?)";', html).group(1)
 movie_id = re.search(r'var movieId = "(.*?)";', html).group(1)
 
 # Generate vrf token
-encrypted = requests.get(f"{API}/enc-vidsrc?user_id={user_id}&movie_id={movie_id}").json()['result']
+enc_vidsrc = f"{API}/enc-vidsrc?user_id={user_id}&movie_id={movie_id}"
+response = requests.get(enc_vidsrc).json()
+encrypted = validate(response, enc_vidsrc)
 
 # Get servers
 servers = f"https://vidsrc.cc/api/{movie_id}/servers?id={movie_id}&type={type}&v={v}&vrf={encrypted}&imdbId={imdb_id}&season={season}&episode={episode}"
@@ -80,6 +91,9 @@ hash_vidplay = servers_parsed.get('VidPlay')
 if hash_vidplay:
     source_vidplay = f"https://vidsrc.cc/api/source/{hash_vidplay}"
     data_vidplay = requests.get(source_vidplay, headers=HEADERS).json()
+    
+    if not data_vidplay['success']:
+        raise Exception("Bad response from VidPlay source API")
     streams_vidplay = data_vidplay['data']
 
     print(f"\n{'-'*25} Streams Data VidPlay {'-'*25}\n")
@@ -91,6 +105,9 @@ hash_upcloud = servers_parsed.get('UpCloud')
 if hash_upcloud:
     source_upcloud = f"https://vidsrc.cc/api/source/{hash_upcloud}"
     data_upcloud = requests.get(source_upcloud, headers=HEADERS).json()
+
+    if not data_upcloud['success']:
+        raise Exception("Bad response from UpCloud source API")
     streams_upcloud, referer = from_iframe(data_upcloud['data']['source'])
 
     print(f"\n{'-'*25} Streams Data UpCloud {'-'*25}\n")

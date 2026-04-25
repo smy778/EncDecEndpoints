@@ -7,6 +7,15 @@ HEADERS = {
 
 API = "https://enc-dec.app/api"
 
+def validate(data, path):
+    if data["status"] != 200:
+        print(f"\n{'-'*25} API ERROR {'-'*25}\n")
+        print(f"Path: {path}")
+        print(f"Status Code: {data['status']}")
+        print(f"Error: {data.get('error', 'unknown')}")
+        raise SystemExit
+    return data["result"]
+
 # Note: this decryptor supports any url returned by animekai, regardless the domain
 # --- Cyberpunk Edgerunners ---
 url = "https://animekai.to/ajax/links/view?id=dIG98qei6A&_=xQm9tJfLwGhz_0Eq8S_YAHYkwp-qSvLfm50W5X1nyd2NnAcpzTUWyAgck4I"
@@ -25,7 +34,10 @@ media = embed.replace("/e/", "/media/")
 encrypted = requests.get(media, headers=HEADERS).json()['result']
 
 # Decrypt
-decrypted = requests.post(f"{API}/dec-mega", json={"text": encrypted, "agent": HEADERS["User-Agent"]}).json()['result']
+dec_mega = f"{API}/dec-mega"
+response = requests.post(dec_mega, json={"text": encrypted, "agent": HEADERS["User-Agent"]}).json()
+decrypted = validate(response, dec_mega)
+
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
 print(f"Referer: {HEADERS['Referer']}\n") # or the embed url's domain
 print(decrypted)
