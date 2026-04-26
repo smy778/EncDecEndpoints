@@ -22,17 +22,17 @@ def validate(data, path):
 # Movie format: <https://vidfast.pro/movie/{IMDB_ID or TMDB_ID}>
 # Tv format: <https://vidlink.pro//tv/{IMDB_ID or TMDB_ID}/{season_number}/{episode_number}>
 
-# --- Cyberpunk Edgerunners ---
-title = "Cyberpunk: Edgerunners"
+# --- Game of Thrones ---
+title = "Game of Thrones"
 type = "tv"
-year = "2022"
-imdb_id = "tt12590266"
-tmdb_id = "105248"
+year = "2011"
+imdb_id = "tt0944947"
+tmdb_id = "1399"
 season = "1"
 episode = "1"
 
 # Fetch page content
-base_url = f"https://vidfast.pro/tv/{tmdb_id}/{season}/{episode}"
+base_url = f"https://vidfast.pro/tv/{tmdb_id}/{season}/{episode}/"
 response = requests.get(base_url).text
 
 # Extract text
@@ -58,6 +58,8 @@ response = requests.post(dec_vidfast, json={"text": servers_encrypted, "version"
 servers_decrypted = validate(response, dec_vidfast)
 
 # Sample the first server
+# Note: there are multiple server options in servers_decrypted, create the stream urls with different 'data' values.
+# For reference, run: print(servers_decrypted)
 server = servers_decrypted[0]
 data = server['data']
 
