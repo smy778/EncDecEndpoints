@@ -20,7 +20,7 @@ def validate(data, path):
 # --- Cyberpunk Edgerunners ---
 url = "https://animekai.to/ajax/links/view?id=dIG98qei6A&_=xQm9tJfLwGhz_0Eq8S_YAHYkwp-qSvLfm50W5X1nyd2NnAcpzTUWyAgck4I"
 enc = requests.get(url, headers=HEADERS).json()["result"]
-dec = decrypted = requests.post(f"{API}/dec-kai", json={"text": enc}).json()["result"]
+dec = requests.post(f"{API}/dec-kai", json={"text": enc}).json()["result"]
 embed = dec["url"]
 
 # Get referer

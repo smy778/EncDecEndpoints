@@ -20,7 +20,7 @@ def validate(data, path):
 # --- Cyberpunk Edgerunners ---
 url = "https://yflix.to/ajax/links/view?id=cYe--KWj5g&_=VU7EzW-r3IptzPzkwFi43K6fMXG1W-twXRnEjr7jYvY2mi6oJTqlmYTf"
 enc = requests.get(url, headers=HEADERS).json()["result"]
-dec = decrypted = requests.post(f"{API}/dec-movies-flix", json={"text": enc}).json()["result"]
+dec = requests.post(f"{API}/dec-movies-flix", json={"text": enc}).json()["result"]
 embed = dec["url"]
 
 # Get referer
