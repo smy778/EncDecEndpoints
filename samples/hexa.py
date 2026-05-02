@@ -39,7 +39,7 @@ HEADERS["X-Api-Key"] = key
 # Get challenge token
 enc_hexa = f"{API}/enc-hexa"
 response = requests.get(enc_hexa).json()
-token = validate(response, enc_hexa)
+token = validate(response, enc_hexa)["token"]
 HEADERS["X-Cap-Token"] = token
 
 # Get encrypted text
