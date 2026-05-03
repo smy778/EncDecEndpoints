@@ -22,18 +22,18 @@ def validate(data, path):
 '''
 Server     Language     URL
 -----------------------------------------------------------------------------------------------
-Neon       Original     https://api.videasy.net/myflixerzupcloud/sources-with-title
-Sage       Original     https://api.videasy.net/1movies/sources-with-title
-Cypher     Original     https://api.videasy.net/moviebox/sources-with-title
+Neon       Original     https://api.videasy.net/mb-flix/sources-with-title
 Yoru       Original     https://api.videasy.net/cdn/sources-with-title  [MOVIE ONLY, MAY HAVE 4K]
-Reyna      Original     https://api2.videasy.net/primewire/sources-with-title
-Breach     Original     https://api.videasy.net/m4uhd/sources-with-title
-Vyse       Original     https://api.videasy.net/hdmovie/sources-with-title
+Cypher     Original     https://api.videasy.net/moviebox/sources-with-title
+Sage       Original     https://api.videasy.net/1movies/sources-with-title
 Jett       Original     https://api.videasy.net/primesrcme/sources-with-title
+Reyna      Original     https://api2.videasy.net/primewire/sources-with-title  [SOURCES: doodstream, voe, filemoon, streamwish, fileions, streamtape]
+Breach     Original     https://api2.videasy.net/m4uhd/sources-with-title
+Vyse       Original     https://api.videasy.net/hdmovie/sources-with-title  [FILTERS quality == "English"]
 Killjoy    German       https://api.videasy.net/meine/sources-with-title?language=german
 Harbor     Italian      https://api.videasy.net/meine/sources-with-title?language=italian
 Chamber    French       https://api.videasy.net/meine/sources-with-title?language=french  [MOVIE ONLY]
-Fade       Hindi        https://api.videasy.net/hdmovie/sources-with-title
+Fade       Hindi        https://api.videasy.net/hdmovie/sources-with-title  [FILTERS quality == "Hindi"]
 Omen       Spanish      https://api.videasy.net/lamovie/sources-with-title
 Gekko      Spanish      https://api2.videasy.net/cuevana/sources-with-title
 Raze       Portuguese   https://api.videasy.net/superflix/sources-with-title
