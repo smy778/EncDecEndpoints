@@ -60,7 +60,7 @@ episode = "1"
 enc_title = quote(quote(title, safe=""), safe="")
 
 # Get encrypted text
-url = f"https://api.videasy.net/myflixerzupcloud/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
+url = f"https://api.videasy.net/mb-flix/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
 enc_data = requests.get(url, headers=HEADERS).text
 
 # Decrypt
