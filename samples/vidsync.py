@@ -9,7 +9,7 @@ HEADERS = {
     "X-Requested-With": "XMLHttpRequest"
 }
 
-API = "http://127.0.0.1:5000/api"
+API = "https://enc-dec.app/api"
 
 def validate(data, path):
     if data["status"] != 200:
