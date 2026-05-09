@@ -5,7 +5,7 @@ HEADERS = {
     "Accept": "*/*",
     "Origin": "https://cineby.sc",
     "Referer": "https://cineby.sc/",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 OPR/126.0.0.0 (Edition std-2)"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
 }
 
 API = "https://enc-dec.app/api"
@@ -60,7 +60,8 @@ episode = "1"
 enc_title = quote(quote(title, safe=""), safe="")
 
 # Get encrypted text
-url = f"https://api.videasy.net/mb-flix/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
+server = "mb-flix"
+url = f"https://api.videasy.net/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
 enc_data = requests.get(url, headers=HEADERS).text
 
 # Decrypt
