@@ -21,7 +21,7 @@ def validate(data, path):
     return data["result"]
 
 # Note that there are different servers, find them here: https://vidsync.xyz/api/stream/serverList
-# Sample servers list: ["cinevault","cinedub","cinebox","cinevip","cinecloud","cine4k"]
+# Sample servers list: ["cinevault", "cinedub", "cinebox", "cineflix", "cinevip","cinecloud","cine4k"]
 
 # Movie format: <https://vidsync.xyz/api/stream/fetch?type=movie&title={title}&mediaId={tmdb_id}&releaseYear={year}&serverName={server}>
 # Tv format: <https://vidsync.xyz/api/stream/fetch?type=tv&title={title}&mediaId={tmdb_id}&releaseYear={year}&serverName={server}&season={season_number}&episode={episode_number}>
@@ -39,14 +39,23 @@ episode = "1"
 # Game of Thrones -> Game+of+Thrones
 enc_title = quote_plus(title)
 
+# Get turnstile token
+enc_vidsync = f"{API}/enc-vidsync"
+response = requests.get(enc_vidsync).json()
+enc_data = validate(response, enc_vidsync)
+token = enc_data["token"]
+
+# Update headers with token
+HEADERS["X-Cf-Turnstile"] = enc_data["token"]
+
 # Get encrypted text
 server = "cinevault"
 url = f"https://vidsync.xyz/api/stream/fetch?title={enc_title}&type={type}&releaseYear={year}&mediaId={tmdb_id}&serverName={server}&season={season}&episode={episode}"
-enc_data = requests.get(url, headers=HEADERS).text
+text = requests.get(url, headers=HEADERS).text
 
 # Decrypt
 dec_vidsync = f"{API}/dec-vidsync"
-response = requests.post(dec_vidsync, json={"text": enc_data, "id": tmdb_id}).json()
+response = requests.post(dec_vidsync, json={"text": text, "id": tmdb_id}).json()
 decrypted = validate(response, dec_vidsync)
 
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
