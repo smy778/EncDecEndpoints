@@ -7,7 +7,7 @@ HEADERS = {
     "Origin": "https://cinesrc.st",
     "Referer": "https://cinesrc.st/",
     "Content-Type": "text/plain;charset=UTF-8",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.37"
 }
 
 API = "https://enc-dec.app/api"
@@ -41,8 +41,9 @@ response = requests.get(enc_cinesrc).json()
 data = validate(response, enc_cinesrc)
 
 token = data["token"]
-headers = data["headers"]
+key = data["key"]
 
+headers = data["headers"]
 getProviderList = headers["getProviderList"]
 getStream = headers["getStream"]
 
@@ -79,7 +80,7 @@ encrypted = line.split(",", 1)[1].split(":", 1)[0]
 
 # Decrypt
 dec_cinesrc = f"{API}/dec-cinesrc"
-response = requests.post(dec_cinesrc, json={"text": encrypted}).json()
+response = requests.post(dec_cinesrc, json={"text": encrypted, "key": key}).json()
 decrypted = validate(response, dec_cinesrc)
 
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
