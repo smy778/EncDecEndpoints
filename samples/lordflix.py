@@ -19,11 +19,10 @@ def validate(data, path):
         raise SystemExit
     return data["result"]
 
-# Note that there are different servers, find them here: https://network.hasta-la-vista.site/servers
-# Sample servers list: ["Berlin", "Tokyo", "Bogota", "Oslo", "Luna", "LordFlix", "Sakura", "Rio", "Ativa"]
+# Note that there are different servers, find them here: https://snowhouse.lordflix.club/servers
 
-# Movie format: <https://network.hasta-la-vista.site/?title={title}&type=movie&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}>
-# Tv format: <https://network.hasta-la-vista.site/?title={title}&type=series&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season_number}&episode={episode_number}>
+# Movie format: <https://snowhouse.lordflix.club/?title={title}&type=movie&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}>
+# Tv format: <https://snowhouse.lordflix.club/?title={title}&type=series&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season_number}&episode={episode_number}>
 
 # --- Game of Thrones ---
 title = "Game of Thrones"
@@ -36,7 +35,7 @@ episode = "1"
 
 # Get encrypted link and sign
 server = "Berlin"
-url = f"https://network.hasta-la-vista.site/?title={quote(title)}&type={type}&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season}&episode={episode}"
+url = f"https://snowhouse.lordflix.club/?title={quote(title)}&type={type}&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season}&episode={episode}"
 
 enc_lordflix = f"{API}/enc-lordflix?url={quote(url)}"
 response = requests.get(enc_lordflix).json()
