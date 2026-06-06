@@ -3,8 +3,8 @@ from urllib.parse import quote
 
 HEADERS = {
     "Accept": "*/*",
-    "Origin": "https://cineby.sc",
-    "Referer": "https://cineby.sc/",
+    "Origin": "https://player.videasy.net",
+    "Referer": "https://player.videasy.net/",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
 }
 
@@ -23,14 +23,12 @@ def validate(data, path):
 Server     Language     URL
 -----------------------------------------------------------------------------------------------
 Neon       Original     https://api.videasy.net/mb-flix/sources-with-title
-Yoru       Original     https://api.videasy.net/cdn/sources-with-title
-Cypher     Original     https://api.videasy.net/moviebox/sources-with-title
+Yoru       Original     https://api.videasy.net/cdn/sources-with-title [Movies only, may have 4K]
+Cypher     Original     https://api.videasy.net/downloader2/sources-with-title
 Sage       Original     https://api.videasy.net/1movies/sources-with-title
 Breach     Original     https://api.videasy.net/m4uhd/sources-with-title
 Vyse       Original     https://api.videasy.net/hdmovie/sources-with-title  [FILTERS quality == "English"]
 Killjoy    German       https://api.videasy.net/meine/sources-with-title?language=german
-Harbor     Italian      https://api.videasy.net/meine/sources-with-title?language=italian
-Chamber    French       https://api.videasy.net/meine/sources-with-title?language=french  [MOVIE ONLY]
 Fade       Hindi        https://api.videasy.net/hdmovie/sources-with-title  [FILTERS quality == "Hindi"]
 Omen       Spanish      https://api.videasy.net/lamovie/sources-with-title
 Raze       Portuguese   https://api.videasy.net/superflix/sources-with-title
@@ -55,7 +53,7 @@ episode = "1"
 enc_title = quote(quote(title, safe=""), safe="")
 
 # Get encrypted text
-server = "cdn"
+server = "mb-flix"
 url = f"https://api.videasy.net/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
 enc_data = requests.get(url, headers=HEADERS).text
 
