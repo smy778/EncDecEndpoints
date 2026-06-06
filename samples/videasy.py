@@ -3,8 +3,8 @@ from urllib.parse import quote
 
 HEADERS = {
     "Accept": "*/*",
-    "Origin": "https://player.videasy.net",
-    "Referer": "https://player.videasy.net/",
+    "Origin": "https://player.videasy.to",
+    "Referer": "https://player.videasy.to/",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
 }
 
@@ -22,22 +22,22 @@ def validate(data, path):
 '''
 Server     Language     URL
 -----------------------------------------------------------------------------------------------
-Neon       Original     https://api.videasy.net/mb-flix/sources-with-title
-Yoru       Original     https://api.videasy.net/cdn/sources-with-title [Movies only, may have 4K]
-Cypher     Original     https://api.videasy.net/downloader2/sources-with-title
-Sage       Original     https://api.videasy.net/1movies/sources-with-title
-Breach     Original     https://api.videasy.net/m4uhd/sources-with-title
-Vyse       Original     https://api.videasy.net/hdmovie/sources-with-title  [FILTERS quality == "English"]
-Killjoy    German       https://api.videasy.net/meine/sources-with-title?language=german
-Fade       Hindi        https://api.videasy.net/hdmovie/sources-with-title  [FILTERS quality == "Hindi"]
-Omen       Spanish      https://api.videasy.net/lamovie/sources-with-title
-Raze       Portuguese   https://api.videasy.net/superflix/sources-with-title
+Neon       Original     https://api.videasy.to/mb-flix/sources-with-title
+Yoru       Original     https://api.videasy.to/cdn/sources-with-title [Movies only, may have 4K]
+Cypher     Original     https://api.videasy.to/downloader2/sources-with-title
+Sage       Original     https://api.videasy.to/1movies/sources-with-title
+Breach     Original     https://api.videasy.to/m4uhd/sources-with-title
+Vyse       Original     https://api.videasy.to/hdmovie/sources-with-title  [FILTERS quality == "English"]
+Killjoy    German       https://api.videasy.to/meine/sources-with-title?language=german
+Fade       Hindi        https://api.videasy.to/hdmovie/sources-with-title  [FILTERS quality == "Hindi"]
+Omen       Spanish      https://api.videasy.to/lamovie/sources-with-title
+Raze       Portuguese   https://api.videasy.to/superflix/sources-with-title
 
-** Note: Use api.videasy.net or api2.videasy.net
+** Note: Use api.videasy.to or api2.videasy.to
 '''
 
-# Movie format: <https://api.videasy.net/{server}/sources-with-title?title={title}&mediaType=movie&year={year}&tmdbId={tmdb_id}&imdbId={imdb_id}>
-# Tv format: <https://api.videasy.net/{server}/sources-with-title?title={title}&mediaType=tv&year={year}&episodeId={episode_number}&seasonId={season_number}&tmdbId={tmdb_id}&imdbId={imdb_id}>
+# Movie format: <https://api.videasy.to/{server}/sources-with-title?title={title}&mediaType=movie&year={year}&tmdbId={tmdb_id}&imdbId={imdb_id}>
+# Tv format: <https://api.videasy.to/{server}/sources-with-title?title={title}&mediaType=tv&year={year}&episodeId={episode_number}&seasonId={season_number}&tmdbId={tmdb_id}&imdbId={imdb_id}>
 
 # --- Game of Thrones ---
 title = "Game of Thrones"
@@ -54,7 +54,7 @@ enc_title = quote(quote(title, safe=""), safe="")
 
 # Get encrypted text
 server = "mb-flix"
-url = f"https://api.videasy.net/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
+url = f"https://api.videasy.to/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
 enc_data = requests.get(url, headers=HEADERS).text
 
 # Decrypt
