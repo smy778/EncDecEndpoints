@@ -53,7 +53,7 @@ episode = "1"
 enc_title = quote(quote(title, safe=""), safe="")
 
 # Get encrypted text
-server = "mb-flix"
+server = "cdn"
 url = f"https://api.videasy.to/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
 enc_data = requests.get(url, headers=HEADERS).text
 
