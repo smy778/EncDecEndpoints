@@ -62,13 +62,17 @@ def solve_stage2(data):
     raise RuntimeError("no solution found")
 
 def pow():
-    challenge1 = requests.get("https://cinesrc.st/api/c/issue", headers=HEADERS).json()
+    response1 = requests.get("https://cinesrc.st/api/c/issue", headers=HEADERS)
+    cookie = response1.headers["Set-Cookie"].split(";")[0]
+    challenge1 = response1.json()
+
     stage1 = {
         "challenge": challenge1,
         "solution": solve_stage1(challenge1)
     }
 
-    challenge2 = requests.get("https://cinesrc.st/api/c/stage2/issue", headers=HEADERS).json()
+    headers = {**HEADERS, "Cookie": cookie}
+    challenge2 = requests.get("https://cinesrc.st/api/c/stage2/issue", headers=headers).json()
     stage2 = {
         "challenge": challenge2,
         "solution": solve_stage2(challenge2)
@@ -77,7 +81,7 @@ def pow():
     return {
         "stage1": stage1,
         "stage2": stage2
-    }
+    }, cookie
 
 # Movie format: <https://cinesrc.st/embed/movie/{IMDB_ID}>
 # Tv format: <https://cinesrc.st/embed/tv/{IMDB_ID}?s={season_number}&e={episode_number}>
@@ -94,7 +98,7 @@ episode = "1"
 url = f"https://cinesrc.st/embed/tv/{imdb_id}?s={season}&e={episode}"
 
 # Get challenges and solve
-challenge_data = pow()
+challenge_data, cookie = pow()
 
 # Get encrypted token and headers
 enc_cinesrc = f"{API}/enc-cinesrc"
@@ -115,7 +119,7 @@ getProviderList = headers["getProviderList"]
 getStream = headers["getStream"]
 
 # Get providers and parse
-headers = {**HEADERS, "Next-Action": getProviderList}
+headers = {**HEADERS, "Next-Action": getProviderList, "Cookie": cookie}
 payload = []
 
 providers_text = requests.post(url, headers=headers, data=json.dumps(payload)).text
@@ -124,7 +128,7 @@ providers = json.loads(line)
 
 # Sample second provider and parse encrypted data
 provider = providers[1]["id"]
-headers = {**HEADERS, "Next-Action": getStream}
+headers = {**HEADERS, "Next-Action": getStream, "Cookie": cookie}
 payload = [
     tmdb_id,
     "show" if type == "tv" else type,
