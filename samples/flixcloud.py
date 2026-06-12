@@ -21,7 +21,7 @@ def validate(data, path):
     return data["result"]
 
 # Sample flixcloud url (compatible with sites using this hoster e.g reanime.to, 1anime.app, etc)
-url = "https://flixcloud.cc/e/5o4rjvbx8ad0"
+url = "https://flixcloud.cc/e/olygrhle7ty7?v=2"
 
 # Fetch page content and extract embedded data
 response = requests.get(url, headers=HEADERS).text
