@@ -3,6 +3,8 @@ import requests
 import hashlib
 import base64
 
+from challenge.cinesrc import solve_stage1
+
 HEADERS = {
     "Origin": "https://cinesrc.st",
     "Referer": "https://cinesrc.st/",
@@ -22,22 +24,8 @@ def validate(data, path):
     return data["result"]
 
 # Challenge solving utilities
-def solve_stage1(data):
-    challenge = data["p"]
-    difficulty = data["d"]
 
-    hash = hashlib.sha256(challenge.encode())
-
-    for i in range(1 << 64):
-        key = format(i, "x")
-
-        digest = hash.copy()
-        digest.update(key.encode("utf-8"))
-
-        if int.from_bytes(digest.digest(), "big") >> (256 - difficulty) == 0:
-            return key
-
-    raise RuntimeError("no solution found")
+# solve_stage1 present as external file: challenge/cinesrc.py
 
 def solve_stage2(data):
     target = data["pack"][0][::-1]
@@ -61,17 +49,15 @@ def solve_stage2(data):
 
     raise RuntimeError("no solution found")
 
-def pow():
-    response1 = requests.get("https://cinesrc.st/api/c/issue", headers=HEADERS)
-    cookie = response1.headers["Set-Cookie"].split(";")[0]
-    challenge1 = response1.json()
+def pow(cookies):
+    headers = {**HEADERS, **cookies}
 
+    challenge1 = requests.get("https://cinesrc.st/api/c/issue", headers=headers).json()
     stage1 = {
         "challenge": challenge1,
         "solution": solve_stage1(challenge1)
     }
 
-    headers = {**HEADERS, "Cookie": cookie}
     challenge2 = requests.get("https://cinesrc.st/api/c/stage2/issue", headers=headers).json()
     stage2 = {
         "challenge": challenge2,
@@ -81,7 +67,21 @@ def pow():
     return {
         "stage1": stage1,
         "stage2": stage2
-    }, cookie
+    }
+
+# Cookie utilities
+def cookie(type, tmdb_id, season, episode):
+    fields = [type, tmdb_id, season, episode]
+    encoded = base64.urlsafe_b64encode(json.dumps(fields, separators=(",", ":")).encode()).decode().rstrip("=")
+    
+    headers = {**HEADERS, "x-cs-q": encoded}
+    bootstrap = requests.post("https://cinesrc.st/api/c/bootstrap", headers=headers).json()
+    
+    return {
+        "x-cs-q": encoded,
+        "x-cs-r": bootstrap["r"],
+        "x-cs-p": bootstrap["p"],
+    }
 
 # Movie format: <https://cinesrc.st/embed/movie/{IMDB_ID}>
 # Tv format: <https://cinesrc.st/embed/tv/{IMDB_ID}?s={season_number}&e={episode_number}>
@@ -98,7 +98,8 @@ episode = "1"
 url = f"https://cinesrc.st/embed/tv/{imdb_id}?s={season}&e={episode}"
 
 # Get challenges and solve
-challenge_data, cookie = pow()
+cookies = cookie(type, tmdb_id, season, episode)
+challenge_data = pow(cookies)
 
 # Get encrypted token and headers
 enc_cinesrc = f"{API}/enc-cinesrc"
@@ -111,7 +112,7 @@ payload = {
 response = requests.post(enc_cinesrc, json=payload).json()
 data = validate(response, enc_cinesrc)
 
-token = data["token"]
+token = f"{data['token']}::c3::{cookies['x-cs-r']}"
 key = data["key"]
 
 headers = data["headers"]
@@ -119,7 +120,7 @@ getProviderList = headers["getProviderList"]
 getStream = headers["getStream"]
 
 # Get providers and parse
-headers = {**HEADERS, "Next-Action": getProviderList, "Cookie": cookie}
+headers = {**HEADERS, "Next-Action": getProviderList}
 payload = []
 
 providers_text = requests.post(url, headers=headers, data=json.dumps(payload)).text
@@ -128,7 +129,7 @@ providers = json.loads(line)
 
 # Sample second provider and parse encrypted data
 provider = providers[1]["id"]
-headers = {**HEADERS, "Next-Action": getStream, "Cookie": cookie}
+headers = {**HEADERS, "Next-Action": getStream}
 payload = [
     tmdb_id,
     "show" if type == "tv" else type,
