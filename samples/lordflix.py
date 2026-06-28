@@ -31,10 +31,13 @@ year = "2011"
 imdb_id = "tt0944947"
 tmdb_id = "1399"
 season = "1"
-episode = "1"
+episode = "2"
+
+# Get sample server
+servers = requests.get("https://snowhouse.lordflix.club/servers", headers=HEADERS).json()['servers']
+server = servers[0]['name']
 
 # Get encrypted link and sign
-server = "Berlin"
 url = f"https://snowhouse.lordflix.club/?title={quote(title)}&type={type}&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season}&episode={episode}"
 
 enc_lordflix = f"{API}/enc-lordflix?url={quote(url)}"
