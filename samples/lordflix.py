@@ -1,4 +1,7 @@
 import requests
+import hashlib
+import base64
+import json
 from urllib.parse import quote
 
 HEADERS = {
@@ -18,6 +21,34 @@ def validate(data, path):
         print(f"Error: {data.get('error', 'unknown')}")
         raise SystemExit
     return data["result"]
+
+# Challenge solving utilities
+def solver(data):
+    max_number = data["maxnumber"]
+    challenge = data["challenge"]
+    salt = data["salt"]
+
+    for number in range(max_number + 1):
+        digest = hashlib.sha256(f'{salt}{number}'.encode()).hexdigest()
+        if digest == challenge:
+            return number
+
+def solve_challenge():
+    url = "https://snowhouse.lordflix.club/challenge"
+    response = requests.get(url, headers=HEADERS)
+    challenge = response.json()
+
+    number = solver(challenge)
+
+    payload = {
+        "algorithm": challenge["algorithm"],
+        "challenge": challenge["challenge"],
+        "number": number,
+        "salt": challenge["salt"],
+        "signature": challenge["signature"],
+    }
+
+    return base64.b64encode(json.dumps(payload).encode()).decode()
 
 # Note that there are different servers, find them here: https://snowhouse.lordflix.club/servers
 
@@ -45,14 +76,16 @@ response = requests.get(enc_lordflix).json()
 data = validate(response, enc_lordflix)
 
 enc_url = data["url"]
-sign = data["sign"]
+
+# Solve challenge
+HEADERS["x-attest"] = solve_challenge()
 
 # Get encrypted media data
 encrypted = requests.get(enc_url, headers=HEADERS).text
 
 # Decrypt
 dec_lordflix = f"{API}/dec-lordflix"
-response = requests.post(dec_lordflix, json={"text": encrypted, "sign": sign}).json()
+response = requests.post(dec_lordflix, json={"text": encrypted}).json()
 decrypted = validate(response, dec_lordflix)
 
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
