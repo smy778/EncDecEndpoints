@@ -22,22 +22,20 @@ def validate(data, path):
 '''
 Server     Language     URL
 -----------------------------------------------------------------------------------------------
-Neon       Original     https://api.videasy.to/mb-flix/sources-with-title
-Yoru       Original     https://api.videasy.to/cdn/sources-with-title [Movies only, may have 4K]
-Cypher     Original     https://api.videasy.to/downloader2/sources-with-title
-Sage       Original     https://api.videasy.to/1movies/sources-with-title
-Breach     Original     https://api.videasy.to/m4uhd/sources-with-title
-Vyse       Original     https://api.videasy.to/hdmovie/sources-with-title  [FILTERS quality == "English"]
-Killjoy    German       https://api.videasy.to/meine/sources-with-title?language=german
-Fade       Hindi        https://api.videasy.to/hdmovie/sources-with-title  [FILTERS quality == "Hindi"]
-Omen       Spanish      https://api.videasy.to/lamovie/sources-with-title
-Raze       Portuguese   https://api.videasy.to/superflix/sources-with-title
-
-** Note: Use api.videasy.to or api2.videasy.to
+Neon       Original     https://api.wingsdatabase.com/mb-flix/sources-with-title
+Yoru       Original     https://api.wingsdatabase.com/cdn/sources-with-title [Movies only, may have 4K]
+Cypher     Original     https://api.wingsdatabase.com/downloader2/sources-with-title
+Sage       Original     https://api.wingsdatabase.com/1movies/sources-with-title
+Breach     Original     https://api.wingsdatabase.com/m4uhd/sources-with-title
+Vyse       Original     https://api.wingsdatabase.com/hdmovie/sources-with-title  [FILTERS quality == "English"]
+Killjoy    German       https://api.wingsdatabase.com/meine/sources-with-title?language=german
+Fade       Hindi        https://api.wingsdatabase.com/hdmovie/sources-with-title  [FILTERS quality == "Hindi"]
+Omen       Spanish      https://api.wingsdatabase.com/lamovie/sources-with-title
+Raze       Portuguese   https://api.wingsdatabase.com/superflix/sources-with-title
 '''
 
-# Movie format: <https://api.videasy.to/{server}/sources-with-title?title={title}&mediaType=movie&year={year}&tmdbId={tmdb_id}&imdbId={imdb_id}>
-# Tv format: <https://api.videasy.to/{server}/sources-with-title?title={title}&mediaType=tv&year={year}&episodeId={episode_number}&seasonId={season_number}&tmdbId={tmdb_id}&imdbId={imdb_id}>
+# Movie format: <https://api.wingsdatabase.com/{server}/sources-with-title?title={title}&mediaType=movie&year={year}&tmdbId={tmdb_id}&imdbId={imdb_id}>
+# Tv format: <https://api.wingsdatabase.com/{server}/sources-with-title?title={title}&mediaType=tv&year={year}&episodeId={episode_number}&seasonId={season_number}&tmdbId={tmdb_id}&imdbId={imdb_id}>
 
 # --- Game of Thrones ---
 title = "Game of Thrones"
@@ -54,7 +52,7 @@ enc_title = quote(quote(title, safe=""), safe="")
 
 # Get encrypted text
 server = "cdn"
-url = f"https://api.videasy.to/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
+url = f"https://api.wingsdatabase.com/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
 enc_data = requests.get(url, headers=HEADERS).text
 
 # Decrypt
