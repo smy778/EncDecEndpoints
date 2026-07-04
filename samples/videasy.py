@@ -22,14 +22,16 @@ def validate(data, path):
 '''
 Server     Language     URL
 -----------------------------------------------------------------------------------------------
-Neon       Original     https://api.wingsdatabase.com/mb-flix/sources-with-title
+Jett       Original     https://api.wingsdatabase.com/jett/sources-with-title
 Yoru       Original     https://api.wingsdatabase.com/cdn/sources-with-title [Movies only, may have 4K]
+Tejo       Original     https://api.wingsdatabase.com/tejo/sources-with-title
+Neon       Original     https://api.wingsdatabase.com/neon2/sources-with-title
+Sage       Original     https://api.wingsdatabase.com/ym/sources-with-title
 Cypher     Original     https://api.wingsdatabase.com/downloader2/sources-with-title
-Sage       Original     https://api.wingsdatabase.com/1movies/sources-with-title
 Breach     Original     https://api.wingsdatabase.com/m4uhd/sources-with-title
-Vyse       Original     https://api.wingsdatabase.com/hdmovie/sources-with-title  [FILTERS quality == "English"]
+Vyse       Original     https://api.wingsdatabase.com/hdmovie/sources-with-title [FILTERS quality == "English"]
 Killjoy    German       https://api.wingsdatabase.com/meine/sources-with-title?language=german
-Fade       Hindi        https://api.wingsdatabase.com/hdmovie/sources-with-title  [FILTERS quality == "Hindi"]
+Fade       Hindi        https://api.wingsdatabase.com/hdmovie/sources-with-title [FILTERS quality == "Hindi"]
 Omen       Spanish      https://api.wingsdatabase.com/lamovie/sources-with-title
 Raze       Portuguese   https://api.wingsdatabase.com/superflix/sources-with-title
 '''
@@ -50,14 +52,19 @@ episode = "1"
 # Game of Thrones -> Game%20of%20Thrones -> Game%2520of%2520Thrones
 enc_title = quote(quote(title, safe=""), safe="")
 
+# Get seed data
+seed_data = requests.get(f"https://api.wingsdatabase.com/seed?mediaId={tmdb_id}", headers=HEADERS).json()
+seed = seed_data["seed"]
+enc = "2"  # Algorithm version
+
 # Get encrypted text
 server = "cdn"
-url = f"https://api.wingsdatabase.com/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}"
+url = f"https://api.wingsdatabase.com/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}&enc={enc}&seed={seed}"
 enc_data = requests.get(url, headers=HEADERS).text
 
 # Decrypt
 dec_videasy = f"{API}/dec-videasy"
-response = requests.post(dec_videasy, json={"text": enc_data, "id": tmdb_id}).json()
+response = requests.post(dec_videasy, json={"text": enc_data, "id": tmdb_id, "seed": seed}).json()
 decrypted = validate(response, dec_videasy)
 
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")
