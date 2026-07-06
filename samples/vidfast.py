@@ -3,7 +3,7 @@ import re
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
-    "Referer": "https://vidfast.pro/",
+    "Referer": "https://vidfast.vc/",
     "X-Requested-With": "XMLHttpRequest"
 }
 
@@ -18,8 +18,8 @@ def validate(data, path):
         raise SystemExit
     return data["result"]
 
-# Movie format: <https://vidfast.pro/movie/{IMDB_ID or TMDB_ID}>
-# Tv format: <https://vidfast.pro/tv/{IMDB_ID or TMDB_ID}/{season_number}/{episode_number}>
+# Movie format: <https://vidfast.vc/movie/{IMDB_ID or TMDB_ID}>
+# Tv format: <https://vidfast.vc/tv/{IMDB_ID or TMDB_ID}/{season_number}/{episode_number}>
 
 # --- Game of Thrones ---
 title = "Game of Thrones"
@@ -31,7 +31,7 @@ season = "1"
 episode = "1"
 
 # Fetch page content
-base_url = f"https://vidfast.pro/tv/{tmdb_id}/{season}/{episode}/"
+base_url = f"https://vidfast.vc/tv/{tmdb_id}/{season}/{episode}/"
 response = requests.get(base_url).text
 
 # Extract text
