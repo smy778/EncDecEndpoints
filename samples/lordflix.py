@@ -34,7 +34,7 @@ def solver(data):
             return number
 
 def solve_challenge():
-    url = "https://snowhouse.lordflix.club/challenge"
+    url = "https://hongkong.lordflix.club/challenge"
     response = requests.get(url, headers=HEADERS)
     challenge = response.json()
 
@@ -50,10 +50,10 @@ def solve_challenge():
 
     return base64.b64encode(json.dumps(payload).encode()).decode()
 
-# Note that there are different servers, find them here: https://snowhouse.lordflix.club/servers
+# Note that there are different servers, find them here: https://hongkong.lordflix.club/servers
 
-# Movie format: <https://snowhouse.lordflix.club/?title={title}&type=movie&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}>
-# Tv format: <https://snowhouse.lordflix.club/?title={title}&type=series&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season_number}&episode={episode_number}>
+# Movie format: <https://hongkong.lordflix.club/?title={title}&type=movie&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}>
+# Tv format: <https://hongkong.lordflix.club/?title={title}&type=series&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season_number}&episode={episode_number}>
 
 # --- Game of Thrones ---
 title = "Game of Thrones"
@@ -65,11 +65,11 @@ season = "1"
 episode = "2"
 
 # Get sample server
-servers = requests.get("https://snowhouse.lordflix.club/servers", headers=HEADERS).json()['servers']
+servers = requests.get("https://hongkong.lordflix.club/servers", headers=HEADERS).json()['servers']
 server = servers[0]['name']
 
 # Get encrypted link and sign
-url = f"https://snowhouse.lordflix.club/?title={quote(title)}&type={type}&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season}&episode={episode}"
+url = f"https://hongkong.lordflix.club/?title={quote(title)}&type={type}&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season}&episode={episode}"
 
 enc_lordflix = f"{API}/enc-lordflix?url={quote(url)}"
 response = requests.get(enc_lordflix).json()
