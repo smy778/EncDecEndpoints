@@ -35,7 +35,7 @@ base_url = f"https://vidfast.vc/tv/{tmdb_id}/{season}/{episode}/"
 response = requests.get(base_url).text
 
 # Extract text
-match = re.search(r'\\"en\\":\\"(.*?)\\"', response)
+match = re.search(r'\\"token\\":\\"(.*?)\\"', response)
 text = match.group(1)
 
 # Get vidfast urls
@@ -59,7 +59,7 @@ servers_decrypted = validate(response, dec_vidfast)
 # Sample the first server
 # Note: there are multiple server options in servers_decrypted, create the stream urls with different 'data' values.
 # For reference, run: print(servers_decrypted)
-server = servers_decrypted[0]
+server = servers_decrypted[1]
 data = server['data']
 
 # Get stream and decrypt

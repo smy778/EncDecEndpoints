@@ -35,7 +35,7 @@ base_url = f"https://vidcore.net/tv/{tmdb_id}/{season}/{episode}/"
 response = requests.get(base_url).text
 
 # Extract text
-match = re.search(r'\\"en\\":\\"(.*?)\\"', response)
+match = re.search(r'\\"token\\":\\"(.*?)\\"', response)
 text = match.group(1)
 
 # Get vidcore urls
