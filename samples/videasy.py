@@ -22,22 +22,22 @@ def validate(data, path):
 '''
 Server     Language     URL
 -----------------------------------------------------------------------------------------------
-Jett       Original     https://api.wingsdatabase.com/jett/sources-with-title
-Yoru       Original     https://api.wingsdatabase.com/cdn/sources-with-title [Movies only, may have 4K]
-Tejo       Original     https://api.wingsdatabase.com/tejo/sources-with-title
-Neon       Original     https://api.wingsdatabase.com/neon2/sources-with-title
-Sage       Original     https://api.wingsdatabase.com/ym/sources-with-title
-Cypher     Original     https://api.wingsdatabase.com/downloader2/sources-with-title
-Breach     Original     https://api.wingsdatabase.com/m4uhd/sources-with-title
-Vyse       Original     https://api.wingsdatabase.com/hdmovie/sources-with-title [FILTERS quality == "English"]
-Killjoy    German       https://api.wingsdatabase.com/meine/sources-with-title?language=german
-Fade       Hindi        https://api.wingsdatabase.com/hdmovie/sources-with-title [FILTERS quality == "Hindi"]
-Omen       Spanish      https://api.wingsdatabase.com/lamovie/sources-with-title
-Raze       Portuguese   https://api.wingsdatabase.com/superflix/sources-with-title
+Jett       Original     https://api.speedracelight.com/jett/sources-with-title
+Yoru       Original     https://api.speedracelight.com/cdn/sources-with-title [Movies only, may have 4K]
+Tejo       Original     https://api.speedracelight.com/tejo/sources-with-title
+Neon       Original     https://api.speedracelight.com/neon2/sources-with-title
+Sage       Original     https://api.speedracelight.com/ym/sources-with-title
+Cypher     Original     https://api.speedracelight.com/downloader2/sources-with-title
+Breach     Original     https://api.speedracelight.com/m4uhd/sources-with-title
+Vyse       Original     https://api.speedracelight.com/hdmovie/sources-with-title [FILTERS quality == "English"]
+Killjoy    German       https://api.speedracelight.com/meine/sources-with-title?language=german
+Fade       Hindi        https://api.speedracelight.com/hdmovie/sources-with-title [FILTERS quality == "Hindi"]
+Omen       Spanish      https://api.speedracelight.com/lamovie/sources-with-title
+Raze       Portuguese   https://api.speedracelight.com/superflix/sources-with-title
 '''
 
-# Movie format: <https://api.wingsdatabase.com/{server}/sources-with-title?title={title}&mediaType=movie&year={year}&tmdbId={tmdb_id}&imdbId={imdb_id}>
-# Tv format: <https://api.wingsdatabase.com/{server}/sources-with-title?title={title}&mediaType=tv&year={year}&episodeId={episode_number}&seasonId={season_number}&tmdbId={tmdb_id}&imdbId={imdb_id}>
+# Movie format: <https://api.speedracelight.com/{server}/sources-with-title?title={title}&mediaType=movie&year={year}&tmdbId={tmdb_id}&imdbId={imdb_id}>
+# Tv format: <https://api.speedracelight.com/{server}/sources-with-title?title={title}&mediaType=tv&year={year}&episodeId={episode_number}&seasonId={season_number}&tmdbId={tmdb_id}&imdbId={imdb_id}>
 
 # --- Game of Thrones ---
 title = "Game of Thrones"
@@ -53,13 +53,13 @@ episode = "1"
 enc_title = quote(quote(title, safe=""), safe="")
 
 # Get seed data
-seed_data = requests.get(f"https://api.wingsdatabase.com/seed?mediaId={tmdb_id}", headers=HEADERS).json()
+seed_data = requests.get(f"https://api.speedracelight.com/seed?mediaId={tmdb_id}", headers=HEADERS).json()
 seed = seed_data["seed"]
 enc = "2"  # Algorithm version
 
 # Get encrypted text
 server = "cdn"
-url = f"https://api.wingsdatabase.com/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}&enc={enc}&seed={seed}"
+url = f"https://api.speedracelight.com/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}&enc={enc}&seed={seed}"
 enc_data = requests.get(url, headers=HEADERS).text
 
 # Decrypt
