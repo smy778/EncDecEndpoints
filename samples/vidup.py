@@ -1,4 +1,4 @@
-import requests
+from curl_cffi import requests # pip install curl-cffi, or your request library
 import re
 
 HEADERS = {

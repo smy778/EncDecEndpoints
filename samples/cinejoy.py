@@ -1,7 +1,5 @@
 import requests
-import hashlib
 import base64
-import json
 from urllib.parse import quote
 
 HEADERS = {
@@ -22,48 +20,13 @@ def validate(data, path):
         raise SystemExit
     return data["result"]
 
-# Challenge solving utilities
-def count_leading_zero_bits(data):
-    count = 0
+# Helper functions
+def base64url_encode(data):
+    return base64.urlsafe_b64encode(data).rstrip(b"=").decode()
 
-    for value in data:
-        if value == 0:
-            count += 8
-            continue
-
-        count += 8 - value.bit_length()
-        break
-
-    return count
-
-def solver(data):
-    salt = hashlib.sha256(f'pow2-salt|{data["s"]}|{data["b"]}'.encode()).digest()
-    counter = 0
-
-    while True:
-        payload = f'pow2|{data["b"]}|{data["s"]}|{counter}'.encode()
-
-        result = hashlib.scrypt(
-            payload,
-            salt=salt,
-            n=data["n"],
-            r=data["r"],
-            p=data["p"],
-            dklen=32
-        )
-
-        if count_leading_zero_bits(result) >= data["d"]:
-            response = json.dumps({**data, "c": counter}, separators=(",", ":")).encode()
-            return base64.b64encode(response).decode()
-
-        counter += 1
-
-def solve_challenge(rid):
-    url = f"https://api.shegu.st/challenge?rid={rid}"
-    response = requests.get(url, headers=HEADERS)
-    challenge = response.json()
-
-    return solver(challenge)
+def base64url_decode(data):
+    data += "=" * (-len(data) % 4)
+    return base64.urlsafe_b64decode(data)
 
 # Note that there are different servers, find them here: https://api.shegu.st/servers
 
@@ -85,22 +48,21 @@ episode = "1"
 servers = requests.get("https://api.shegu.st/servers", headers=HEADERS).json()['servers']
 server = servers[0]['name']
 
-# Get encrypted text
+# Get encrypted text and state
 url = f"https://api.shegu.st/?title={quote(title)}&type={type}&year={year}&imdb={imdb_id}&tmdb={tmdb_id}&server={server}&season={season}&episode={episode}"
 
 enc_cinejoy = f"{API}/enc-cinejoy?url={quote(url)}"
 response = requests.get(enc_cinejoy).json()
+
 enc = validate(response, enc_cinejoy)
+data = enc['data']
+state = enc['state']
 
-# Solve challenge
-HEADERS["x-at"] = solve_challenge(enc)
-
-# Get encrypted media data
-encrypted = requests.get(f"https://api.shegu.st/{enc}", headers=HEADERS).text
+encrypted = requests.post(f"https://api.shegu.st/g", data=base64url_decode(enc['data']), headers=HEADERS).content
 
 # Decrypt
 dec_cinejoy = f"{API}/dec-cinejoy"
-response = requests.post(dec_cinejoy, json={"text": encrypted}).json()
+response = requests.post(dec_cinejoy, json={"text": base64url_encode(encrypted), "state": state}).json()
 decrypted = validate(response, dec_cinejoy)
 
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")

@@ -1,9 +1,9 @@
-import requests
+from curl_cffi import requests # pip install curl-cffi, or your request library
 import re
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
-    "Referer": "https://vidcore.net/",
+    "User-Agent": "Mozilla/5.0",
+    "Referer": "https://vidcore.io/",
     "X-Requested-With": "XMLHttpRequest"
 }
 
@@ -18,8 +18,8 @@ def validate(data, path):
         raise SystemExit
     return data["result"]
 
-# Movie format: <https://vidcore.net/movie/{IMDB_ID or TMDB_ID}>
-# Tv format: <https://vidcore.net/tv/{IMDB_ID or TMDB_ID}/{season_number}/{episode_number}>
+# Movie format: <https://vidcore.io/movie/{IMDB_ID or TMDB_ID}>
+# Tv format: <https://vidcore.io/tv/{IMDB_ID or TMDB_ID}/{season_number}/{episode_number}>
 
 # --- Game of Thrones ---
 title = "Game of Thrones"
@@ -31,9 +31,9 @@ season = "1"
 episode = "1"
 
 # Fetch page content
-base_url = f"https://vidcore.net/tv/{tmdb_id}/{season}/{episode}/"
+base_url = f"https://vidcore.io/tv/{tmdb_id}/{season}/{episode}/"
 response = requests.get(base_url).text
-
+print(response)
 # Extract text
 match = re.search(r'\\"(?:en|token)\\":\\"(.*?)\\"', response)
 text = match.group(1)
@@ -59,7 +59,7 @@ servers_decrypted = validate(response, dec_vidcore)
 # Sample the first server
 # Note: there are multiple server options in servers_decrypted, create the stream urls with different 'data' values.
 # For reference, run: print(servers_decrypted)
-server = servers_decrypted[0]
+server = servers_decrypted[2]
 data = server['data']
 
 # Get stream and decrypt

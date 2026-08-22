@@ -1,4 +1,4 @@
-import requests
+from curl_cffi import requests # pip install curl-cffi, or your request library
 import re
 
 HEADERS = {
@@ -59,7 +59,7 @@ servers_decrypted = validate(response, dec_vidfast)
 # Sample the first server
 # Note: there are multiple server options in servers_decrypted, create the stream urls with different 'data' values.
 # For reference, run: print(servers_decrypted)
-server = servers_decrypted[1]
+server = servers_decrypted[4]
 data = server['data']
 
 # Get stream and decrypt
