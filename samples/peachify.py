@@ -18,11 +18,11 @@ def validate(data, path):
     return data["result"]
 
 servers = [
-    {"label": "Wolf", "path": "air", "api": "https://usa.eat-peach.sbs"},
-    {"label": "Spider", "path": "holly", "api": "https://usa.eat-peach.sbs"},
-    {"label": "Iron", "path": "moviebox", "api": "https://uwu.eat-peach.sbs"},
-    {"label": "Multi", "path": "multi", "api": "https://usa.eat-peach.sbs"},
-    {"label": "Dark", "path": "net", "api": "https://uwu.eat-peach.sbs"},
+    {"label": "Multi", "path": "multi", "api": "https://x.eat-peach.sbs"},
+    {"label": "Horizon", "path": "hr", "api": "https://x.eat-peach.sbs"},
+    {"label": "Spider", "path": "holly", "api": "https://x.eat-peach.sbs"},
+    {"label": "Wolf", "path": "air", "api": "https://x.eat-peach.sbs"},
+    {"label": "Iron", "path": "moviebox", "api": "https://x.eat-peach.sbs"},
 ]
 
 # Movie format: <{api}/{path}/movie/{tmdb_id}>
