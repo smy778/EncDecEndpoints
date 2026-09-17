@@ -33,7 +33,7 @@ episode = "1"
 # Fetch page content
 base_url = f"https://vidcore.io/tv/{tmdb_id}/{season}/{episode}/"
 response = requests.get(base_url).text
-print(response)
+
 # Extract text
 match = re.search(r'\\"(?:en|token)\\":\\"(.*?)\\"', response)
 text = match.group(1)
