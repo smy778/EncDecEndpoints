@@ -21,19 +21,29 @@ def validate(data, path):
 
 '''
 Server     Language     URL
------------------------------------------------------------------------------------------------
-Yoru       Original     https://api.speedracelight.com/cdn/sources-with-title [May have 4K]
-Breach     Original     https://api.speedracelight.com/m4uhd/sources-with-title
-Neon       Original     https://api.speedracelight.com/vsrc/sources-with-title
-Vyse       Original     https://api.speedracelight.com/hdmovie/sources-with-title [FILTERS quality == "English"]
-Killjoy    German       https://api.speedracelight.com/meine/sources-with-title?language=german
-Fade       Hindi        https://api.speedracelight.com/hdmovie/sources-with-title [FILTERS quality == "Hindi"]
-Omen       Spanish      https://api.speedracelight.com/lamovie/sources-with-title
-Raze       Portuguese   https://api.speedracelight.com/superflix/sources-with-title
+--------------------------------------------------------------------------------------------------------
+Miami      Original     https://api.wecollege.net/miami/sources [May have 4K]
+Boise      Original     https://api.wecollege.net/boise/sources [May have 4K]
+Vegas      Original     https://api.wecollege.net/vegas/sources
+Reno       Original     https://api.wecollege.net/reno/sources
+Oakland    Original     https://api.wecollege.net/oakland/sources
+Seattle    Original     https://api.wecollege.net/seattle/sources
+Phoenix    Original     https://api.wecollege.net/phoenix/sources
+Atlanta    Original     https://api.wecollege.net/atlanta/sources
+Portland   Original     https://api.wecollege.net/portland/sources
+Austin     Original     https://api.wecollege.net/austin/sources [FILTERS quality == "English"]
+Dallas     Original     https://api.wecollege.net/dallas/sources
+Tampa      Original     https://api.wecollege.net/tampa/sources
+Orlando    Original     https://api.wecollege.net/orlando/sources
+Munich     German       https://api.wecollege.net/munich/sources?language=german
+Berlin     German       https://api.wecollege.net/berlin/sources [USES German altTitle when available]
+Paris      French       https://api.wecollege.net/paris/sources
+Delhi      Hindi        https://api.wecollege.net/delhi/sources [FILTERS quality == "Hindi"]
+Cancun     Spanish      https://api.wecollege.net/cancun/sources
 '''
 
-# Movie format: <https://api.speedracelight.com/{server}/sources-with-title?title={title}&mediaType=movie&year={year}&tmdbId={tmdb_id}&imdbId={imdb_id}>
-# Tv format: <https://api.speedracelight.com/{server}/sources-with-title?title={title}&mediaType=tv&year={year}&episodeId={episode_number}&seasonId={season_number}&tmdbId={tmdb_id}&imdbId={imdb_id}>
+# Movie format: <https://api.wecollege.net/{server}/sources?title={title}&mediaType=movie&year={year}&tmdbId={tmdb_id}&imdbId={imdb_id}>
+# Tv format: <https://api.wecollege.net/{server}/sources?title={title}&mediaType=tv&year={year}&episodeId={episode_number}&seasonId={season_number}&tmdbId={tmdb_id}&imdbId={imdb_id}>
 
 # --- Game of Thrones ---
 title = "Game of Thrones"
@@ -49,13 +59,13 @@ episode = "1"
 enc_title = quote(quote(title, safe=""), safe="")
 
 # Get seed data
-seed_data = requests.get(f"https://api.speedracelight.com/seed?mediaId={tmdb_id}", headers=HEADERS).json()
+seed_data = requests.get(f"https://api.wecollege.net/seed?mediaId={tmdb_id}", headers=HEADERS).json()
 seed = seed_data["seed"]
 enc = "2"  # Algorithm version
 
 # Get encrypted text
-server = "cdn"
-url = f"https://api.speedracelight.com/{server}/sources-with-title?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}&enc={enc}&seed={seed}"
+server = "miami"
+url = f"https://api.wecollege.net/{server}/sources?title={enc_title}&mediaType={type}&year={year}&episodeId={episode}&seasonId={season}&tmdbId={tmdb_id}&imdbId={imdb_id}&enc={enc}&seed={seed}"
 enc_data = requests.get(url, headers=HEADERS).text
 
 # Decrypt
