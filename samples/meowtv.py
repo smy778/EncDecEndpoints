@@ -19,11 +19,13 @@ def validate(data, path):
     return data["result"]
 
 servers = [
-    {"id": "ipcloud", "label": "IPcloud"},
+    {"id": "acme", "label": "Acme"},
     {"id": "dcloud", "label": "Dcloud"},
     {"id": "tik", "label": "TCloud"},
+    {"id": "ipcloud", "label": "IPcloud"},
     {"id": "turkce", "label": "Türkçe", "movieOnly": True},
-    {"id": "hindiv3", "label": "Hindi v3"},
+    {"id": "hindi", "label": "Hindi"},
+    {"id": "english", "label": "English"},
 ]
 
 # Movie format: <https://api.meowtv.ru/streams/movie/{tmdb_id}?s={server_id}>
@@ -38,6 +40,11 @@ imdb_id = "tt0944947"
 tmdb_id = "1399"
 season = "1"
 episode = "1"
+
+# Get stream ticket and update headers
+ticket_url = f"https://api.meowtv.ru/streams/ticket"
+ticket = requests.post(ticket_url, headers=HEADERS).json()["ticket"]
+HEADERS["X-Stream-Ticket"] = ticket
 
 # Build url and get encrypted data
 # Sample server, you can change the server by changing the index
