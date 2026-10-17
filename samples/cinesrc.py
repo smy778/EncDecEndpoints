@@ -1,9 +1,8 @@
 import json
 import requests
-import hashlib
 import base64
 
-from challenge.cinesrc import solve_stage1
+from challenge.cinesrc import solve_stage1, solve_stage2
 
 HEADERS = {
     "Origin": "https://cinesrc.st",
@@ -24,38 +23,30 @@ def validate(data, path):
     return data["result"]
 
 # Challenge solving utilities
-
-# solve_stage1 present as external file: challenge/cinesrc.py
-
-def solve_stage2(data):
-    target = data["pack"][0][::-1]
-    salt = data["pack"][3][::-1]
-    r = data["pack"][4][::-1]
-
-    decode = lambda s: base64.urlsafe_b64decode(s + "=" * (-len(s) % 4)).decode()
-
-    body = decode(r.split(".")[1])
-    payload = decode(body.split(".", 1)[1])
-    difficulty = json.loads(payload)["d"]
-
-    width = (difficulty + 3) // 4
-
-    for counter in range(1 << difficulty):
-        key = format(counter, "x").zfill(width)
-        digest = hashlib.sha256((salt + key).encode()).hexdigest()
-
-        if digest == target:
-            return key
-
-    raise RuntimeError("no solution found")
-
-def pow(cookies):
+def pow(url, cookies):
     headers = {**HEADERS, **cookies}
 
     challenge1 = requests.get("https://cinesrc.st/api/c/issue", headers=headers).json()
+
+    payload = {
+        "data": {
+            "url": url,
+            "user_agent": HEADERS["User-Agent"],
+            "challenge_data": challenge1
+        },
+        "type": "seed"
+    }
+
+    enc_cinesrc = f"{API}/enc-cinesrc"
+    response = requests.post(enc_cinesrc, json=payload).json()
+    data = validate(response, enc_cinesrc)
+
+    seed = data["seed"]
+    state = data["state"]
+
     stage1 = {
         "challenge": challenge1,
-        "solution": solve_stage1(challenge1)
+        "solution": solve_stage1(challenge1, seed)
     }
 
     challenge2 = requests.get("https://cinesrc.st/api/c/stage2/issue", headers=headers).json()
@@ -65,8 +56,11 @@ def pow(cookies):
     }
 
     return {
-        "stage1": stage1,
-        "stage2": stage2
+        "challenge_data": {
+            "stage1": stage1,
+            "stage2": stage2
+        },
+        "state": state
     }
 
 # Cookie utilities
@@ -78,6 +72,7 @@ def cookie(type, tmdb_id, season, episode):
     bootstrap = requests.post("https://cinesrc.st/api/c/bootstrap", headers=headers).json()
     
     return {
+        "x-cs-b": "20261014-a",
         "x-cs-q": encoded,
         "x-cs-r": bootstrap["r"],
         "x-cs-p": bootstrap["p"],
@@ -95,27 +90,30 @@ tmdb_id = "1399"
 season = "1"
 episode = "1"
 
-url = f"https://cinesrc.st/embed/tv/{imdb_id}?s={season}&e={episode}"
+url = f"https://cinesrc.st/embed/tv/{tmdb_id}?s={season}&e={episode}"
 
 # Get challenges and solve
 cookies = cookie(type, tmdb_id, season, episode)
-challenge_data = pow(cookies)
+data = pow(url, cookies)
 
 # Get encrypted token and headers
 enc_cinesrc = f"{API}/enc-cinesrc"
 payload = {
-    "url": url,
-    "agent": HEADERS["User-Agent"],
-    "challenge_data": challenge_data
+    "data": {
+        "url": url,
+        "user_agent": HEADERS["User-Agent"],
+        **data
+    },
+    "type": "encrypt"
 }
 
 response = requests.post(enc_cinesrc, json=payload).json()
 data = validate(response, enc_cinesrc)
 
 token = f"{data['token']}::c3::{cookies['x-cs-r']}"
-key = data["key"]
-
 headers = data["headers"]
+state = data["state"]
+
 getProviderList = headers["getProviderList"]
 getStream = headers["getStream"]
 
@@ -128,7 +126,8 @@ line = providers_text.splitlines()[1].split(":", 1)[1]
 providers = json.loads(line)
 
 # Sample second provider and parse encrypted data
-provider = providers[1]["id"]
+server_index = 0 # <- sample server index, inspect the providers list for more details with: print(providers)
+provider = providers[server_index]["id"]
 headers = {**HEADERS, "Next-Action": getStream}
 payload = [
     tmdb_id,
@@ -146,13 +145,11 @@ if response.status_code != 200:
     print(f"Try another server.\nProvider error: {provider} -> {response.status_code}")
     raise SystemExit
 
-streams_text = response.text
-line = streams_text.splitlines()[1]
-encrypted = line.split(",", 1)[1].split(":", 1)[0]
+encrypted = response.text
 
 # Decrypt
 dec_cinesrc = f"{API}/dec-cinesrc"
-response = requests.post(dec_cinesrc, json={"text": encrypted, "key": key}).json()
+response = requests.post(dec_cinesrc, json={"text": encrypted, "state": state}).json()
 decrypted = validate(response, dec_cinesrc)
 
 print(f"\n{'-'*25} Decrypted Data {'-'*25}\n")

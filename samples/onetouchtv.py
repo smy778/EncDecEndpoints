@@ -1,7 +1,9 @@
 import requests
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+    "Origin": "https://onetouchtv.xyz",
+    "Referer": "https://onetouchtv.xyz/"
 }
 
 API = "https://enc-dec.app/api"
@@ -17,7 +19,7 @@ def validate(data, path):
 
 # --- OneTouchTV ---
 
-content_url = "https://api3.devcorp.me/web/vod/150294-ghost-train-2024/episode/1"
+content_url = "https://api3.devcorp.me/web/vod/664495-vanished-name-2026/episode/1"
 
 # Get encrypted data
 encrypted = requests.get(content_url, headers=HEADERS).text
