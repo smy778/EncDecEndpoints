@@ -19,13 +19,11 @@ def validate(data, path):
     return data["result"]
 
 servers = [
+    {"id": "english", "label": "English"},
     {"id": "acme", "label": "Acme"},
     {"id": "dcloud", "label": "Dcloud"},
     {"id": "tik", "label": "TCloud"},
-    {"id": "ipcloud", "label": "IPcloud"},
-    {"id": "turkce", "label": "Türkçe", "movieOnly": True},
-    {"id": "hindi", "label": "Hindi"},
-    {"id": "english", "label": "English"},
+    {"id": "hindi", "label": "Hindi"}
 ]
 
 # Movie format: <https://api.meowtv.ru/streams/movie/{tmdb_id}?s={server_id}>
