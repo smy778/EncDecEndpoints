@@ -34,7 +34,7 @@ episode = "1"
 # Note: there are multiple server options, you can change the server by changing the index
 # For reference, run: print(servers)
 servers = requests.get("https://providers.nexa.mov/v1/status", headers=HEADERS).json()['sources']
-server = servers[0]['codename']
+server = servers[0]['codename'] # last four servers: kyoto, tokyo, hokkaido, fuji are exclusively anime sources with platform 'anilist' using anilist ids. Will not work with tmdb.
 
 # Encrypt server data
 url = f"https://providers.nexa.mov/?platform=tmdb&id={tmdb_id}&server={server}&season={season}&episode={episode}"
